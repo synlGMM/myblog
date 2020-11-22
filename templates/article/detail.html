@@ -9,11 +9,26 @@
         <!-- 展示文章的title -->
         <h1 class="col-12 mt-4 mb-4">{{ article.title }}</h1>
         <!-- 展示文章的author -->
-        <div class="col-12 alert alert-success">作者：{{ article.author }}</div>
+        <div class="col-12 alert alert-success">作者：{{ article.author }}
+        . <a href="#" onclick="confirm_delete()">删除文章</a>
+        </div>
         <!-- 文章正文 -->
         <div class="col-12">
             <p>{{ article.body|safe }}</p>
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    function confirm_delete() {
+        // body...
+        layer.open({
+            title: '确认删除',
+            content: '确认删除这篇文章吗？',
+            yes: function(index, layero) {
+                location.href='{% url "article:article_delete" article.id %}'
+            }
+        });
+    }
+</script>
 {% endblock content %}
