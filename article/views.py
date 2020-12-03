@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 import markdown
 from django.http import HttpResponse
 from .forms import ArticlePostForm
-
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def article_list(request):
@@ -30,12 +30,13 @@ def article_detail(request, id):
 
     return render(request, 'article/detail.html', context)
 
+@login_required(login_url='/userprofile/login/')
 def article_create(request):
     if request.method == "POST":
         article_post_form = ArticlePostForm(data=request.POST)
         if article_post_form.is_valid():
             new_article = article_post_form.save(commit=False)
-            new_article.author = User.objects.get(id=1)
+            new_article.author = User.objects.get(id=request.user.id)
             new_article.save()
             return redirect("article:article_list")
         else:
@@ -45,13 +46,18 @@ def article_create(request):
         context = { 'article_post_form': article_post_form }
         return render(request, 'article/create.html', context)
 
-
+@login_required(login_url='/userprofile/login/')
 def article_delete(request, id):
-    article = ArticlePost.objects.get(id=id)
-    article.delete()
-    return redirect("article:article_list")
+    user = User.objects.get(id=id)
+    if request.user != user:
+        return HttpResponse('你没有权限进行此操作。')
+    else:
+        article = ArticlePost.objects.get(id=id)
+        article.delete()
+        return redirect("article:article_list")
 
 def article_safe_delete(request, id):
+    user = User.objects.get(id=id)
     if request.method == 'POST':
         article = ArticlePost.objects.get(id=id)
         article.delete()
@@ -59,6 +65,7 @@ def article_safe_delete(request, id):
     else:
         return HttpResponse('仅允许post请求')
 
+@login_required(login_url='/userprofile/login/')
 def article_update(request, id):
     """
     更新文章的视图函数
@@ -66,18 +73,24 @@ def article_update(request, id):
     GET方法进入初始表单页面
     id：文章的id
     """
+    user = User.objects.get(id=id)
     article = ArticlePost.objects.get(id=id)
     if request.method == 'POST':
-        article_post_form = ArticlePostForm(data=request.POST)
-        if article_post_form.is_valid():
-            article.title = request.POST['title']
-            article.body = request.POST['body']
-            article.save()
-            return redirect("article:article_detail", id=id)
+        if request.user != user:
+            return HttpResponse('你没有权限进行此操作。')
         else:
-            return HttpResponse("表单内容有误，请重新填写。")
+            article_post_form = ArticlePostForm(data=request.POST)
+            if article_post_form.is_valid():
+                article.title = request.POST['title']
+                article.body = request.POST['body']
+                article.save()
+                return redirect("article:article_detail", id=id)
+            else:
+                return HttpResponse("表单内容有误，请重新填写。")
     # 如果用户 GET 请求获取数据
-    else:
+    elif request.method == 'GET':
         article_post_form = ArticlePostForm()
         context = { 'article': article, 'article_post_form': article_post_form }
         return render(request, 'article/update.html', context )
+    else:
+        return HttpResponse('请使用GET或POST请求数据')

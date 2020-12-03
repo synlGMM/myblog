@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'article',
     'userprofile',
+    'password_reset',
 ]
 
 MIDDLEWARE = [
@@ -126,3 +127,18 @@ STATICFILES_DIRS = (
 
 STATIC_URL = '/static/'
 
+# EMAIL_USE_TLS = True
+
+EMAIL_HOST = 'smtp.163.com'
+
+EMAIL_HOST_USER = 'pm_zyy@163.com'
+
+EMAIL_HOST_PASSWORD = 'QULYQMGAEIJZIFBD'
+
+EMAIL_PORT = 25
+
+DEFAULT_FROM_EMAIL = 'pm_zyy@163.com'
+
+# 媒体文件地址
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
