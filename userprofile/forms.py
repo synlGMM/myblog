@@ -2,6 +2,8 @@ from django import forms
 
 from django.contrib.auth.models import User
 
+from django.contrib.auth.forms import UserCreationForm
+
 from .models import Profile
 
 # 登录表单，继承了 forms.Form 类
@@ -12,12 +14,10 @@ class UserLoginForm(forms.Form):
 
 class UserRegisterForm(forms.ModelForm):
     """docstring for UserRegisterForm"""
-    password = forms.CharField()
-    password2 = forms.CharField()
-
+    email = forms.EmailField(label='Email')
     class Meta:
         model = User
-        fields = ('username', 'email')
+        fields = ('username', 'email',)
 
     def clean_password2(self):
         data = self.cleaned_data
