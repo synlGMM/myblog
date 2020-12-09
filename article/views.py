@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import ArticlePost
+from .models import ArticlePost, ArticleColumn
 from django.contrib.auth.models import User
 import markdown
 from django.http import HttpResponse
@@ -75,13 +75,16 @@ def article_create(request):
         if article_post_form.is_valid():
             new_article = article_post_form.save(commit=False)
             new_article.author = User.objects.get(id=request.user.id)
+            if request.POST['column'] != 'none':
+                new_article.column = ArticleColumn.objects.get(id=request.POST['column'])
             new_article.save()
             return redirect("article:article_list")
         else:
             return HttpResponse("表单内容有误，请重新填写。")
     else:
         article_post_form = ArticlePostForm()
-        context = { 'article_post_form': article_post_form }
+        columns = ArticleColumn.objects.all()
+        context = { 'article_post_form': article_post_form, 'columns': columns}
         return render(request, 'article/create.html', context)
 
 @login_required(login_url='/userprofile/login/')
@@ -122,6 +125,10 @@ def article_update(request, id):
         if article_post_form.is_valid():
             article.title = request.POST['title']
             article.body = request.POST['body']
+            if request.POST['column'] != 'none':
+                article.column = ArticleColumn.objects.get(id=request.POST['column'])
+            else:
+                article.column = None
             article.save()
             return redirect("article:article_detail", id=id)
         else:
@@ -129,7 +136,8 @@ def article_update(request, id):
     # 如果用户 GET 请求获取数据
     elif request.method == 'GET':
         article_post_form = ArticlePostForm()
-        context = { 'article': article, 'article_post_form': article_post_form }
+        columns = ArticleColumn.objects.all()
+        context = { 'article': article, 'article_post_form': article_post_form, 'columns': columns }
         return render(request, 'article/update.html', context )
     else:
         return HttpResponse('请使用GET或POST请求数据')
