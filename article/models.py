@@ -2,6 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.urls import reverse
+from taggit.managers import TaggableManager
+from PIL import Image
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFit
+
 # Create your models here.
 
 class ArticleColumn(models.Model):
@@ -31,6 +36,28 @@ class ArticlePost(models.Model):
     created = models.DateTimeField(default=timezone.now)
     updated = models.DateTimeField(auto_now=True)
     total_views = models.PositiveIntegerField(default=0)
+    tags = TaggableManager(blank=True)
+    avatar = ProcessedImageField(
+        upload_to='article/%Y%m%d/',
+        processors=[ResizeToFit(width=400)],
+        format='JPEG',
+        options={'quality': 100}
+    )
+
+    # 保存时处理图片
+    # def save(self, *args, **kwargs):
+    #     article = super(ArticlePost, self).save(*args, **kwargs)
+
+    #     # 固定宽度缩放图片大小
+    #     if self.avatar and not kwargs.get('update_fields'):
+    #         image = Image.open(self.avatar)
+    #         (x, y) = image.size
+    #         new_x = 400
+    #         new_y = int(new_x * (y / x))
+    #         resized_image = image.resize((new_x, new_y), Image.ANTIALIAS)
+    #         resized_image.save(self.avatar.path)
+
+    #     return article
 
 
 
