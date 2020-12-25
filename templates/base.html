@@ -12,19 +12,41 @@
     <!-- 引入bootstrap的css文件 -->
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'md_css/monokai.css' %}">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
 </head>
 
 <body>
     <!-- 引入导航栏 -->
     {% include 'header.html' %}
     <!-- 预留具体页面的位置 -->
-    {% block content %}{% endblock content %}
+    <div id="wrapper">
+        {% block content %}{% endblock content %}
+        <div id="push"></div>
+    </div>
+
     <!-- 引入注脚 -->
     {% include 'footer.html' %}
     <script src="{% static 'jquery/jquery-3.5.1.js' %}"></script>
+    {% include 'back_to_top_func.html' %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
 integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'layer/layer.js' %}"></script>
     {% block script %}{% endblock script %}
+
+    <style type="text/css">
+        html, body{
+            height: 100%;
+            margin: 0;
+        }
+
+        #wrapper {
+            min-height: 100%;
+            margin-bottom: -60px;
+        }
+
+        #footer, #push {
+            height: 60px;
+        }
+    </style>
 </body>
