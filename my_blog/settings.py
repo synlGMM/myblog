@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'taggit',
     'imagekit',
     'ckeditor',
+    'mptt',
 ]
 
 MIDDLEWARE = [
@@ -175,3 +176,5 @@ CKEDITOR_CONFIGS = {
         'extraPlugins': ','.join(['codesnippet']),
     }
 }
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
