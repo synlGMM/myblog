@@ -10,6 +10,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from comment.models import Comment
 from comment.forms import CommentForm
+from django.views import View
 
 # Create your views here.
 def article_list(request):
@@ -152,3 +153,11 @@ def article_update(request, id):
     else:
         return HttpResponse('请使用GET或POST请求数据')
 
+# 点赞数 +1
+class IncreaseLikesView(View):
+    """docstring for IncreaseLikesView"""
+    def post(self, request, *arg, **kwargs):
+        article = ArticlePost.objects.get(id=kwargs.get('id'))
+        article.likes += 1
+        article.save()
+        return HttpResponse('success')

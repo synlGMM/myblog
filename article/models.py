@@ -43,7 +43,7 @@ class ArticlePost(models.Model):
         format='JPEG',
         options={'quality': 100}
     )
-
+    likes = models.PositiveIntegerField(default=0)
     # 保存时处理图片
     # def save(self, *args, **kwargs):
     #     article = super(ArticlePost, self).save(*args, **kwargs)
@@ -59,7 +59,12 @@ class ArticlePost(models.Model):
 
     #     return article
 
-
+    def was_created_recently(self):
+        diff = timezone.now() - self.created
+        if diff.days == 0 and diff.seconds >= 0 and diff.seconds < 60:
+            return True
+        else:
+            return False
 
     class Meta:
         ordering = ('-created',)
