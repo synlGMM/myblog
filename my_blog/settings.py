@@ -32,6 +32,8 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['.pmzyy.com', '47.97.10.146']
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
