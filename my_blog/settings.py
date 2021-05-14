@@ -30,7 +30,7 @@ SECRET_KEY = 'mm2sb3csdz1_6c4e##ca0@z@1r%-jx4jq2*0e^*vtzdl45k8it'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['.pmzyy.com', '47.97.10.146']
+ALLOWED_HOSTS = ['.pmzyy.cn', '47.97.10.146']
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 
